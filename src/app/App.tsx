@@ -10,10 +10,6 @@ export function App() {
       <header className="app-header">
         <p className="eyebrow">Portfolio Project</p>
         <h1>Task Agenda</h1>
-        <p className="subtitle">
-          MVP phase 4-5: CRUD, completado, filtros y estados robustos conectados a
-          Supabase.
-        </p>
       </header>
       <main>
         {loading ? (
