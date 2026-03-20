@@ -3,6 +3,20 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase/client";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
 
+function resolveEmailRedirectUrl() {
+  const configuredUrl = import.meta.env.VITE_AUTH_REDIRECT_URL?.trim();
+
+  if (configuredUrl) {
+    return configuredUrl;
+  }
+
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+
+  return undefined;
+}
+
 export function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,9 +57,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
         if (error) throw error;
       },
       async signUp(email: string, password: string) {
+        const emailRedirectTo = resolveEmailRedirectUrl();
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo,
+          },
         });
 
         if (error) throw error;

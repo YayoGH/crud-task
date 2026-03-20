@@ -50,6 +50,9 @@ Crea un archivo `.env` local usando `.env.example`:
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
+- `VITE_AUTH_REDIRECT_URL` (URL publica del frontend para confirmacion de email)
+
+En Supabase (Authentication -> URL Configuration), agrega esa misma URL en `Redirect URLs`.
 
 ## Desarrollo local
 
