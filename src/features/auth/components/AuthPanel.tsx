@@ -3,16 +3,30 @@ import { useAuth } from "../useAuth";
 
 type AuthMode = "signin" | "signup";
 
-export function AuthPanel() {
+type AuthPanelProps = {
+  mode?: AuthMode;
+  onModeChange?: (nextMode: AuthMode) => void;
+};
+
+export function AuthPanel({ mode, onModeChange }: AuthPanelProps) {
   const { signIn, signUp } = useAuth();
-  const [mode, setMode] = useState<AuthMode>("signin");
+  const [internalMode, setInternalMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const buttonText = mode === "signin" ? "Entrar" : "Crear cuenta";
+  const currentMode = mode ?? internalMode;
+
+  function updateMode(nextMode: AuthMode) {
+    if (mode === undefined) {
+      setInternalMode(nextMode);
+    }
+    onModeChange?.(nextMode);
+  }
+
+  const buttonText = currentMode === "signin" ? "Entrar" : "Crear cuenta";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,7 +42,7 @@ export function AuthPanel() {
     try {
       setSubmitting(true);
 
-      if (mode === "signin") {
+      if (currentMode === "signin") {
         await signIn(email.trim(), password);
         setMessage("Sesion iniciada.");
       } else {
@@ -53,17 +67,17 @@ export function AuthPanel() {
       <div className="auth-switch" role="tablist" aria-label="Modo de autenticacion">
         <button
           type="button"
-          className={mode === "signin" ? "toggle active" : "toggle"}
-          onClick={() => setMode("signin")}
-          aria-pressed={mode === "signin"}
+          className={currentMode === "signin" ? "toggle active" : "toggle"}
+          onClick={() => updateMode("signin")}
+          aria-pressed={currentMode === "signin"}
         >
           Ingresar
         </button>
         <button
           type="button"
-          className={mode === "signup" ? "toggle active" : "toggle"}
-          onClick={() => setMode("signup")}
-          aria-pressed={mode === "signup"}
+          className={currentMode === "signup" ? "toggle active" : "toggle"}
+          onClick={() => updateMode("signup")}
+          aria-pressed={currentMode === "signup"}
         >
           Registrarme
         </button>
@@ -84,7 +98,7 @@ export function AuthPanel() {
           <span>Clave</span>
           <input
             type="password"
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
+            autoComplete={currentMode === "signin" ? "current-password" : "new-password"}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             minLength={6}

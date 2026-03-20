@@ -6,7 +6,7 @@ import { TaskForm } from "./TaskForm";
 import { TaskList } from "./TaskList";
 
 export function TasksView() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [filter, setFilter] = useState<TaskFilter>("all");
   const {
     tasks,
@@ -72,9 +72,6 @@ export function TasksView() {
             <h2>Nueva tarea</h2>
             <p className="subtitle">Crea, edita y elimina tus tareas del dia.</p>
           </div>
-          <button type="button" className="btn" onClick={() => void signOut()}>
-            Cerrar sesion
-          </button>
         </div>
 
         <TaskForm
